@@ -3,22 +3,21 @@ function [] = run_audio_alignment(recon_path, audio_type, image_type)
     %  recon_path: filepath for reconstruction directory.
     %       - must contain a subfolder labeled "audio"
     %  audio_type: audio type refers to the way audio files are named.
-    %       - ex: 'OptoAcoustics' uses this file format: 
+    %       - ex: 'OptoAcoustics' uses this file format:
     %           - main mic audio: "MAIN_*_pre.wav"
     %           - reference audio: "MAIN_*_pre_ref.wav"
     %           - noise-cancelled audio: "DSP_OUT_*.wav"
     %       - custom strings can be added by implementing an if statement
     %       in get_path_by_audiotype()
     % image_type: image type refers to the way image files are named.
-    %       - ex: "USC" uses this file format:
-    %          - TODO FILL OUT.
+    %       - ex: "tres_trim_encoded": [timestamp]_tRes[tRes]_TRTrim[TRTrim].avi
     %       - custom strings can be added by implementing an if statement
     %       in get_path_by_imagetype()
 
-    
+
     [main_path, ref_path, denoised_path, audio_sorting_fn] = get_path_by_audiotype(audio_type);
     [image_sorting_fn, image_temp_res_fn, image_trim_fn] = get_path_by_imagetype(image_type);
-    
+
     %% Data loading and error out if mis-match.
     audio_recon_path = fullfile(recon_path, "audio");
     image_recon_path = fullfile(recon_path);
@@ -55,9 +54,9 @@ function [] = run_audio_alignment(recon_path, audio_type, image_type)
         try
             tempRes = image_temp_res_fn(image_object.name);
             TRtoTrim = image_trim_fn(image_object.name);
-            
+
             if isnan(tempRes)
-                warning('temporal resoluntion not specified. Using 200ms')
+                warning('temporal resolution for trimming not specified. Using 200ms')
                 tempRes = 200;
             elseif isnan(TRtoTrim)
                 warning('TR to Trim is not specified. Using 0')
@@ -75,14 +74,13 @@ function [] = run_audio_alignment(recon_path, audio_type, image_type)
         if ~exist(fullfile(recon_path, 'video_with_audio/'), 'dir')
             mkdir(fullfile(recon_path, 'video_with_audio/'));
         end
-        
+
         audio_write_path = fullfile(recon_path, 'audio_trunc/', ...
             [image_object.name(1:end-4), '_audio.wav']);
 
         image_write_path = fullfile(recon_path, 'video_with_audio', ...
             [image_object.name(1:end-4), '_with_audio.avi']);
 
-        % dbstop audio_align
         audio_align(audio_ref_path, audio_path, image_path, audio_write_path, image_write_path, TRtoTrim, tempRes)
     end
 end
