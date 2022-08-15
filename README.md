@@ -8,7 +8,15 @@ run_audio_alignment("recon", "tres_trim_encoded", "OptoAcoustics")
 
 Input parameters: directory, image_type, audio_type.
 
-The following tree shows what image/audio filenames and structure should be for the settings in the above call. Since we are using the OptoAcoustics settings, we have 3 files to read per scan: MAIN\_\*\_pre.avi (subject audio), MAIN\_\*\_pre_ref.avi (reference audio), DSP\_OUT\_\*\_.avi (de-noised audio).
+### Supported Image Types:
+- tres_trim_encoded : temporal resolution and TRTrim used during reconstructionto be used in cropping of audio. See [Trim](#trim)
+- no_sort_no_trim: no sorting or trimming. file types will be sorted by default file order list, and audio_video files will be paired assuming no trimming was done during reconstruction
+- custom image types: can be added by end user
+
+### Supported Audio Types:
+- OptoAcoustics: File type for OptoAcoustics recorded microphone data. We have 3 files to read per scan: MAIN\_\*\_pre.avi (subject audio), MAIN\_\*\_pre_ref.avi (reference audio), DSP\_OUT\_\*\_.avi (de-noised audio).
+
+The following tree shows what image/audio filenames and structure should be for the 'tres_trim_encoded' Image Type and 'Optoacoustics' Audio Type in the above call.
 ```bash
 ├── recon
 │   ├── audio
