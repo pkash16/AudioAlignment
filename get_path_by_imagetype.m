@@ -31,7 +31,6 @@ function [sorting_fn, temp_res_fn, trim_fn] = get_path_by_imagetype(type)
         type = "tres_trim_encoded";
     end
 
-
     if type == "USC"
        sorting_fn = @(image_path) image_path(str2double(erase(image_path(19:24), ';')));
        temp_res_fn = @(image_path) str2num( regexprep( regexp(image_path, "tRes(.*)_", "match", "once"), {'\D*([\d\.]+\d)[^\d]*', '[^\d\.]*'}, {'$1 ', ' '} ) ) * 1e-3;
@@ -40,13 +39,13 @@ function [sorting_fn, temp_res_fn, trim_fn] = get_path_by_imagetype(type)
         sorting_fn = @(image_path) image_path(1:7);
         temp_res_fn = @(image_path) str2num( regexprep( regexp(image_path, "tRes(.*)_", "match", "once"), {'\D*([\d\.]+\d)[^\d]*', '[^\d\.]*'}, {'$1 ', ' '} ) ) * 1e-3;
         trim_fn = @(image_path) str2num( regexprep( regexp(image_path, "TRTrim(.*).avi", "match", "once"), {'\D*([\d\.]+\d)[^\d]*', '[^\d\.]*'}, {'$1 ', ' '} ) );
-    else
-        % Add custom handlers here if necessary instead of catchall 'else'.
-       sorting_fn = @(image_path) NaN;
-       temp_res_fn = @(image_path) 0; % if trimming is 0, we don't need temp_res at all..
-       trim_fn = @(image_path) 0; % no trimming of image file necessary.
+    elseif type == "no_sort_no_trim"
+        % We do not need to sort by timestamp, or do any trimming.
+        sorting_fn = @(image_path) NaN;
+        temp_res_fn = @(image_path) 0;
+        trim_fn = @(image_path) 0;
     end
-
+    % Add custom handlers here if necessary instead of catchall 'else'.
 
 
 

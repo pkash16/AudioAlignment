@@ -28,7 +28,7 @@ function [] = run_audio_alignment(recon_path, audio_type, image_type)
         "*.avi"));
 
     if size(audio_files, 1) ~= size(image_files, 1)
-       error("Make sure the # of files in the image directory and audio directory match!")
+       error("Make sure the # of files in the image directory and audio directory match! \n n_audio: %d n_image: %d", length(audio_files), length(image_files))
     end
 
     try

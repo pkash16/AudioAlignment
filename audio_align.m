@@ -43,7 +43,7 @@ truncated_audio = audio_data(begin_idx:end_idx);
 trim_amt_s = (TRtoTrim) * tempRes
 trim_audio_num = floor(trim_amt_s / (1/sampling_f))
 
-truncated_audio = truncated_audio(trim_audio_num:end);
+truncated_audio = truncated_audio(trim_audio_num+1:end);
 
 audiowrite(audio_write_path, truncated_audio, sampling_f);
 
