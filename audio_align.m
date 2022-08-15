@@ -1,4 +1,4 @@
-function audio_align(audio_ref_path, audio_path, image_path, audio_write_path, video_write_path)
+function audio_align(audio_ref_path, audio_path, image_path, audio_write_path, video_write_path, TRtoTrim, tempRes, n_arm_recon)
 %   audio_align(audio_path, image_path, video_write_path)
 %   Takes one audio file and one image file and then does the alignment
 %   between the two and outputs to video file in video_write_path.
@@ -11,7 +11,7 @@ function audio_align(audio_ref_path, audio_path, image_path, audio_write_path, v
 [audio_ref_data, sampling_f] = audioread(audio_ref_path);
 [audio_data, sampling_f] = audioread(audio_path);
 
-alignment_thresh = max(audio_ref_data) / 2; % Alignment Threshold to determine when scanner is "on"
+alignment_thresh = max(audio_ref_data) / 4; % Alignment Threshold to determine when scanner is "on"
 
 %% Find begin and end for alignment.
 
@@ -38,6 +38,14 @@ end
 end_idx = min(end_idx, size(audio_ref_data,1));
 
 truncated_audio = audio_data(begin_idx:end_idx);
+
+%% Trim the amount based on the TR.
+TRtoTrim
+trim_amt_s = (TRtoTrim / n_arm_recon) * tempRes
+trim_audio_num = floor(trim_amt_s / (1/sampling_f))
+
+truncated_audio = truncated_audio(trim_audio_num:end);
+
 audiowrite(audio_write_path, truncated_audio, sampling_f);
 
 system(strjoin(['ffmpeg -i ', image_path, ' -i ', audio_write_path, ...
